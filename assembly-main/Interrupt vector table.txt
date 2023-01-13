@@ -1,0 +1,45 @@
+-	Interrupts are like subroutines, but you dont need to know the memory address to invoke them
+
+-	Interrupts are called through the use of interrupt numbers rather than memory addresses
+
+-	Interrupts can be setup by the programmer. For Example you could set up interrupt "0x32" and have it point to your code. Then when someone does "int x032" it will invoke your code
+
+---------------------------------------------------------------------------------------------------
+
+Q => What happens when you invoke an interrupt?
+A => 1	Processor is interrupted
+	2 	Old State saved on the stack (such as return address)
+	3 	Interrupt executed
+
+---------------------------------------------------------------------------------------------------
+
+Interrupt Vector Table Explained
+
+-	Table describing 256 interrupt handlers
+
+-	Entries contain 4 bytes (OFFSET:SEGMENT)
+
+-	Interrupts are in numerical order in the table
+
+
+Interrupt 		Offset(2bytes)			Segment(2bytes)
+-------------------------------------------------------
+
+0 				0x00 					0x7c0
+1 				0x8d00 					0x00
+2 				0x00 					0x8d0
+and so on.. tille 256 times
+
+Interrupt 0 = address 0x00
+Interrupt 1 = address 0x04
+Interrupt 2 = address 0x08
+
+
+Q => What offset do you think interrupt 0x13 is?
+A => 0x13 * 0x04 = 0x46 or 76 decimal
+
+	"int 0x13" processor looks at offset 76 in RAM
+	76-77 = Offset
+	78-79 = Segment
+
+	

@@ -1,0 +1,78 @@
+File do not exist on the disks, files are kernel OS concept, on disk we have filesystems
+
+1.	Filesystems are kernel implemented they are not the responsibility of the hard disk
+	File systems are special data structures that expalin files.
+	Its upto kernel to read data correctly.
+	Disk just holds loads of data blocks called sectors.
+
+2.	Implementing a filesystem requires the kernel programmer to create a filesystem driver for the target filesystem.
+
+Data is read and written in sectors
+
+-	Data is read and written in sectors typically 512 byte blocks. They can be of different sizes, but mostly 512 bytes. For a CD the sector size is generally bigger.
+
+-	Reading the sector of a disk will return 512 bytes of data for the chosen sector.
+
+The old style of reading disks is called CHS (Cylinder Head Sector)
+
+-	Sectors are read and written by specifying a "head", "track" and "sector".
+
+The modern way is LBA (Logical Block Address)
+
+-	This is the modern way of reading froma  hard disk, rather than specify "head", "track" and "sector" we just specify a number that starts from zero.
+
+-	LBA allows us to read from the disk as if we are reading blocks froma  very large file
+
+-	LBA 0 = first sector on the disk
+
+-	LBA 1 = second sector on the disk
+
+and so on...
+
+-----------------------------------------------------------------------------------------------------
+
+Calculating LBA
+
+Q => Lets say we want to read the byte at position 58376 on the disk, how do we do it?
+
+A => LBA = 58376/512 = 114
+	
+	Now we read that LBA we can load 512 bytes into memory
+	Next we need to know our offset that our byte is in our buffer
+
+	Offset = 58376%512 = 8
+
+	Verification:
+		114 * 512 + 8 = 58376
+
+
+-------------------------------------------------------------------------------------------------------
+
+BIOS Disk Routines
+
+-	In 16 bit real mode the bios provides interrupt 13h for disk operations
+
+-	In 32 bit mode you have to create your own disk driver which is a little more complicated
+
+-------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

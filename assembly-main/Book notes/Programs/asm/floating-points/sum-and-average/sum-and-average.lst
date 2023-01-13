@@ -1,0 +1,66 @@
+     1                                 %line 1+1 sum-and-average.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 [section .data]
+     6                                 
+     7                                 
+     8                                 
+     9                                 
+    10                                 NULL equ 0
+    11                                 TRUE equ 1
+    12                                 FALSE equ 0
+    13                                 
+    14                                 EXIT_SUCCESS equ 0
+    15                                 SYS_exit equ 60
+    16                                 
+    17                                 
+    18                                 
+    19 00000000 D7A3703D0A5735409A-    fltLst dq 21.34, 6.15, 9.12, 10.05, 7.75
+    20 00000000 999999999918403D0A-
+    21 00000000 D7A3703D22409A9999-
+    22 00000000 999919244000000000-
+    23 00000000 00001F40           
+    24 00000028 0AD7A3703D0AF73F00-     dq 1.44, 14.50
+    25 00000028 00000000002D40     
+    26 00000038 07000000               length dd 7
+    27 0000003C 0000000000000000       lstSum dq 0.0
+    28 00000044 0000000000000000       lstAve dq 0.0
+    29                                 
+    30                                 
+    31                                 
+    32                                 [section .text]
+    33                                 [global _start]
+    34                                 _start:
+    35                                 
+    36                                 
+    37                                 
+    38                                 
+    39 00000000 8B0C25[00000000]        mov ecx, [length]
+    40 00000007 48C7C3[00000000]        mov rbx, fltLst
+    41 0000000E 48C7C600000000          mov rsi, 0
+    42 00000015 F20F100C25[00000000]      movsd xmm1, qword[lstSum]
+    43                                 
+    44                                  sumLp:
+    45 0000001E F20F1004F3              movsd xmm0, qword[rbx+rsi*8]
+    46 00000023 F20F58C8                addsd xmm1, xmm0
+    47 00000027 48FFC6                  inc rsi
+    48 0000002A E2F0                    loop sumLp
+    49                                 
+    50 0000002C F20F110C25[00000000]      movsd qword[lstSum], xmm1
+    51                                 
+    52                                 
+    53                                 
+    54                                 
+    55 00000035 F20F2A0425[00000000]      cvtsi2sd xmm0, dword[length]
+    56                                 
+    57 0000003E F20F5EC8                divsd xmm1, xmm0
+    58 00000042 F20F110C25[00000000]      movsd qword[lstAve], xmm1
+    59                                 
+    60                                 
+    61                                 
+    62                                 
+    63                                  last:
+    64 0000004B 48C7C03C000000          mov rax, SYS_exit
+    65 00000052 48C7C300000000          mov rbx, EXIT_SUCCESS
+    66 00000059 0F05                    syscall

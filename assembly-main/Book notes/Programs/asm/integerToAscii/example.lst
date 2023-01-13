@@ -1,0 +1,69 @@
+     1                                 %line 1+1 integerToAscii.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 
+     8                                 [section .data]
+     9                                 
+    10                                 
+    11                                 
+    12                                 
+    13                                 NULL equ 0
+    14                                 EXIT_SUCCESS equ 0
+    15                                 SYS_exit equ 60
+    16                                 
+    17                                 
+    18                                 
+    19                                 
+    20 00000000 DA050000               intNum dd 1498
+    21                                 
+    22                                 [section .bss]
+    23 00000000 <gap>                  strNum resb 10
+    24                                 
+    25                                 
+    26                                 
+    27                                 [section .text]
+    28                                 [global _start]
+    29                                 _start:
+    30                                 
+    31                                 
+    32                                 
+    33                                 
+    34                                 
+    35 00000000 8B0425[00000000]        mov eax, dword [intNum]
+    36 00000007 48C7C100000000          mov rcx, 0
+    37 0000000E BB0A000000              mov ebx, 10
+    38                                 
+    39                                 divideLoop:
+    40 00000013 BA00000000              mov edx, 0
+    41 00000018 F7F3                    div ebx
+    42                                 
+    43 0000001A 52                      push rdx
+    44 0000001B 48FFC1                  inc rcx
+    45                                 
+    46 0000001E 83F800                  cmp eax, 0
+    47 00000021 75EE                    jne divideLoop
+    48                                 
+    49                                 
+    50                                 
+    51 00000023 48C7C3[00000000]        mov rbx, strNum
+    52 0000002A 48C7C700000000          mov rdi, 0
+    53                                 
+    54                                 popLoop:
+    55 00000031 58                      pop rax
+    56 00000032 0430                    add al, "0"
+    57 00000034 88043B                  mov byte [rbx+rdi], al
+    58 00000037 48FFC7                  inc rdi
+    59 0000003A E2F3                    loop popLoop
+    60                                 
+    61 0000003C C6043B00                mov byte [rbx+rdi], NULL
+    62                                 
+    63                                 
+    64                                 
+    65                                 
+    66                                 last:
+    67 00000040 48C7C03C000000          mov rax, SYS_exit
+    68 00000047 48C7C700000000          mov rdi, EXIT_SUCCESS
+    69 0000004E 0F05                    syscall

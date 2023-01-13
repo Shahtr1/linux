@@ -1,0 +1,259 @@
+1)	The Instruction Set Architecture
+
+It specifies the syntax abd semantics of assembly.
+
+-	Registers
+	Registers is where the processor stores things. There are a lot.
+	Important ones are these
+
+		Purpose (width) (Name) (Number)
+
+	-	General-purpose registers (64bits) (many) (16)
+
+
+	-	Flags register (64bits) (RFLAGS) (1)
+		(keeps track) whether there was an overflow 
+		whether last arithmetic operation resulted in a zero
+		whether there is a carry
+
+
+	-	Instruction pointer register (64bits) (%rip) (1)
+
+
+	-	XMM registers (for SSE) (128bits) (%xmm[0-15]) (16)
+
+
+	-	YMM registers (for AVX) (256bits) (%ymm[0-15]) (16)
+
+
+	In AT&T syntax the last operand is the destination
+	In Intel syntax the first operand is the destination
+
+
+	-----------------------------------------------------------------------------------------------------------------------
+	-----------------------------------------------------------------------------------------------------------------------
+
+
+	x86-64 Data Types
+
+	C Declaration						x86-64 data type  			x86-64 size(bytes)						Assembly suffix
+	-----------------------------------------------------------------------------------------------------------------------
+
+	char									Byte 						1 										b 
+	short									Word 						2                                       w
+	int									Double word 					4 									  	l or d
+	unsigned int 						Double word 					4 										l or d	
+	long 								Quad word 						8 										q
+	unsigned long 						Quad word						8 										q
+	char*								Quad word						8 										q	
+	float 								Single precision				4 										s
+	double 								Double precision				8 										d
+	long double							Extended precision				16(10) 									t
+
+
+	-----------------------------------------------------------------------------------------------------------------------
+	-----------------------------------------------------------------------------------------------------------------------
+
+	Opcode Suffixes for Extension
+
+	Sign-extension or zero-extension opcode use two data-type suffixes
+
+	Examples:
+
+	Extend with zeros (z)																	Preserve the sign (s)
+	movzbl %al, %edx 																		movslq %eax, %rdx			
+
+	move with zero extend and first operand is a bytes										Move a 32-bit integer into a 64-bit integer register
+	and second operand is a long
+
+	Move an 8-bit integer into a 32-bit integer register
+
+	------------------------------------------------------------------------------------------------------------------------
+	------------------------------------------------------------------------------------------------------------------------
+
+	Arithmetic and logic operations update status flags in the RFLAGS register
+
+	Example:
+
+	decq %rbx				Decrement %rbx, and set ZF(zero flag in RFLAGS register) if the result is 0.
+	jne .LBB7_1				Jump to label .LBB7_1 if ZF is not set
+
+
+	The main flags needed in RFLAGS register are
+
+	Bit(s)				Abbreviation					Description
+	---------------------------------------------------------------
+
+	0 						CF 							Carry	(The last ALU operation generated a carry or borrow out of the most-significant bit)
+	6 						ZF 							Zero 	(The result of the last ALU operation was 0)
+	7 						SF 							Sign 	(The last ALU operation produced a value whose sign bit was set)
+	11 						OF 							Overflow	(The last ALU operation resulted in arithmetic overflow)
+
+
+	---------------------------------------------------------------------------------------------------------------------------
+	---------------------------------------------------------------------------------------------------------------------------
+
+
+	Condition Codes
+
+	Condition code 						Translation 					RFLAGS status flags checked
+	-----------------------------------------------------------------------------------------------
+
+	a 									if above						CF=0 and ZF=0
+	ae 									if above or equal				CF=0
+	c 									on carry 						CF=1
+	e 									if equal 						ZF=1
+	ge 									if greater or equal 			SF=OF
+	ne 									if not equal 					ZF=0
+	o 									on overflow 					OF=1
+	z 									if zero 						ZF=1
+
+
+	Q => Why do the condition codes e and ne check the zero flag?
+	A => Hardware typically compares integer operands using subtraction.
+
+	--------------------------------------------------------------------------------------------------------------------------
+	--------------------------------------------------------------------------------------------------------------------------
+
+
+	x86-64 Direct Addressing Modes
+
+	At most one operand may specify a memory address
+
+	Direct addressing modes:
+	-	Immediate: Use the specified value.					movq $172, %rdi
+
+	-	Register: Use the values in the specified register.			movq %rcx, %rdi
+
+	-	Direct memory: Use the value at the specified memory address.		movq 0x172, %rdi
+
+
+	--------------------------------------------------------------------------------------------------------------------------
+	--------------------------------------------------------------------------------------------------------------------------
+
+
+	x86-64 Indirect Addressing Modes
+
+	Specifying a memory address by some computation
+	-	Register indirect: The address is stored in the specified register.						movq (%rax), %rdi
+
+	-	Register indexed: The address is a constant offset of the value in the specified register.		movq 172(%rax), %rdi
+
+	-	Instruction-pointer relative: The address is indexed relative to %rip.					movq 172(%rip), %rdi
+
+
+	--------------------------------------------------------------------------------------------------------------------------
+	--------------------------------------------------------------------------------------------------------------------------
+
+
+	Base Indexed Scale Displacement
+
+	Example:
+
+	movq 172(%rdi, %rdx, 8), %rax
+
+	Displacement: 								Base:				Index: 			Scale:
+	an 8-bit, 16-bit, or 32-bit value 			a GPR 				a GPR 			either 1, 2, 4 or 8
+
+	This mode refers to the address
+
+	Base + Index * Scale + Displacement
+
+	If unspecified, Index and Displacement default to 0, and Scale defaults to 1.
+
+	Like in Stack memory.
+
+
+	--------------------------------------------------------------------------------------------------------------------------
+	--------------------------------------------------------------------------------------------------------------------------
+
+
+	Jump Instructions
+
+	jmp and j<condition>, take a label as their operand
+
+	-	Labels can be symbols, exact addresses, or relative addressed.
+
+		Example:
+
+		jge LBB0_1
+		...
+		LBB0_1:
+			leaq -1(%rbx), %rdi
+
+
+
+
+	-	An indirect jump takes as its operand an indirect address. 
+
+		Example:
+
+		jmp *%eax
+
+
+	--------------------------------------------------------------------------------------------------------------------------
+	--------------------------------------------------------------------------------------------------------------------------
+
+
+	-	Assembly Idiom 1
+
+		The XOR opcode, "xor A, B," computes the bitwise XOR of A and B.
+
+		Q => What does the following assembly do?
+
+				xor %rax, %rax
+
+		A => Zeroes the register.
+
+
+	-	Assembly Idiom 2
+
+		The test opcode, "test A, B," computes the bitwise AND of A and B and discard the result, preserving the RFLAGS register.
+
+		TEST instruction performs a bitwise logical AND, discards the actual result and sets/unsets the ZF according to the result of the logical and: 
+		if the result is zero it sets ZF = 1, otherwise it sets ZF = 0.
+
+		Q => What does the test instruction here do?
+
+			test %rcx, %rcx
+			je 400c0a <mm+0xda>
+
+		A => If Zero flag is set, it jumps
+
+
+
+		Q => What does the test instruction here do?
+
+			test %rax, %rax
+			cmovne %rax, %r8
+
+		A => Conditional move checks if register is 0.
+
+
+	-	Assembly Idiom 3
+
+		The x86-64 ISA includes several no-op (no operation) instructions, including "nop", "nop A," and "data16"
+
+		Q => What does this line of assembly do?
+
+			data16 data16 data16 nopw %cs:0x0(%rax,%rax,1)
+
+		A => Nothing
+
+		BUTTTTTTTTTTTTTTTTTTTTTTTTTT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+
+		SQ => Why would the compiler generate assembly with these idioms?
+
+		SA => Mainly to optimize instruction memory (e.g., code size, alignment).
+
+
+
+
+
+
+	--------------------------------------------------------------------------------------------------------------------------
+	--------------------------------------------------------------------------------------------------------------------------
+
+
+
+

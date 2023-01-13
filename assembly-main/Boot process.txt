@@ -1,0 +1,53 @@
+Steps to a booted system:
+
+1	The BIOS is executed directly from ROM
+
+2	The BIOS loads the Bootloader into address 0x7C00
+
+3	The Bootloader loads the kernel
+
+
+Q => What is a bootloader?
+
+A => It is a small program responsible for loading the kernel of an operating system.
+
+When computer boots, it runs in a compatibility mode (real mode), which only gives us access to 1MB of memory, also runs only 16 bits code.
+
+Responsibility of a bootloader is to put us into protected mode, which would give us access to 4GB address space.
+and we would be running 32-but code and then executes the kernel.
+
+It uses functions available in the bios to assist itself.
+
+
+-------------------------------------------------------------------
+
+
+-	The CPU executes instructions directly from the BIOS's ROM
+
+-	The BIOS generally loads itself into RAM then continues execution from RAM
+
+-	The BIOS will initialize essential hardware
+
+-	The BIOS looks for a bootloader to boot by searching all storage mediums for the boot signature "0x55AA".
+511th byte and 512th byte should contain a boot signature.
+
+If it finds that signature, it will load that sector, at address 0x7C00 and will then execute from that address running our bootloader.
+
+A sector is a block of storage.(512 bytes)
+
+--------------------------------------------------------------------
+
+The BIOS is a Kernel in its self
+
+-	The BIOS contains routines to assist our bootloader in booting our kernel
+
+-	The BIOS is 16 bit code which means only 16 bit code can execute it properly
+
+-	The BIOS routines are generic and a standard.
+
+----------------------------------------------------------------
+
+
+
+
+

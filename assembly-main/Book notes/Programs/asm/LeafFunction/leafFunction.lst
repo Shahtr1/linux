@@ -1,0 +1,76 @@
+     1                                 %line 1+1 leafFunction.asm
+     2                                 
+     3                                 
+     4                                 
+     5                                 
+     6                                 
+     7                                 [section .data]
+     8                                 
+     9                                 
+    10                                 
+    11                                 
+    12                                  EXIT_SUCCESS equ 0
+    13                                  SYS_exit equ 60
+    14                                 
+    15                                 
+    16                                 
+    17 00000000 040000000500000003-     arr dd 4, 5, 3, 2, 1
+    18 00000000 000000020000000100-
+    19 00000000 0000               
+    20 00000014 05000000                len dd 5
+    21 00000018 00000000                ave dd 0
+    22 0000001C 00000000                sum dd 0
+    23                                 
+    24                                 
+    25                                 
+    26                                 [section .text]
+    27                                 
+    28                                 
+    29                                 
+    30                                 
+    31                                 
+    32                                 
+    33                                 
+    34                                 
+    35                                 
+    36                                 
+    37                                 [global stats1]
+    38                                  stats1:
+    39 00000000 4154                    push r12
+    40                                 
+    41 00000002 49C7C400000000          mov r12, 0
+    42 00000009 48C7C000000000          mov rax, 0
+    43                                  sumLoop:
+    44 00000010 420304A7                add eax, dword[rdi+r12*4]
+    45 00000014 49FFC4                  inc r12
+    46 00000017 4939F4                  cmp r12, rsi
+    47 0000001A 7CF2                    jl sumLoop
+    48                                 
+    49 0000001C 8902                    mov dword[rdx], eax
+    50                                 
+    51 0000001E 415C                    pop r12
+    52 00000020 C3                      ret
+    53                                 
+    54                                 
+    55                                 
+    56                                 [global _start]
+    57                                  _start:
+    58                                 
+    59                                 
+    60                                 
+    61                                 
+    62 00000021 48C7C1[00000000]        mov rcx, ave
+    63 00000028 48C7C2[00000000]        mov rdx, sum
+    64 0000002F 8B3425[00000000]        mov esi, dword[len]
+    65 00000036 48C7C7[00000000]        mov rdi, arr
+    66 0000003D E8B9FFFFFF              call stats1
+    67                                 
+    68                                 
+    69                                 
+    70                                 
+    71                                  last:
+    72 00000042 48C7C03C000000          mov rax, SYS_exit
+    73 00000049 48C7C700000000          mov rdi, EXIT_SUCCESS
+    74 00000050 0F05                    syscall
+    75                                 
+    76                                 

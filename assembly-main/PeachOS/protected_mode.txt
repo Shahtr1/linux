@@ -1,0 +1,65 @@
+Protected mode is a processor state in x86 architectures which gives access to memory protection, 4GB address space and much more
+
+Can provide memory and hardware protection
+
+4GB of memory are directly addressable
+
+--------------------------------------------------------------------------------------------------------------------------------
+
+Memory and Hardware protection
+
+-	Protected Mode allows you to protect memory from being accessed
+
+-	Protected Mode can prevent user programs talking with hardware
+
+
+We have different protection levels in our processor
+-	we have what is known as Ring 0 (the most privileged ring) we can do anything here, talk withhardware, destroy memory, etc
+	The Kernel runs on Ring 0
+
+-	Then we have Ring 1 and 2, which are generally not used, but they can be used for device drivers
+
+-	Then Ring 3, this is the least privileged ring. We put processor into Ring 3 when we are running user code.
+	This prevents user programs to ovveride kernel mory, from talking with hardware, directly and using privileged instructions such as STI to start the interrupts and CLI to clear interrupts. In fact how a user program talk to the kernel is that they cause an interrupt and by that the processor can put itself back into Ring 0, so it can begin running the interrupt code on the kernel. Its then the kernel's responsibilty to go back into Ring 3 again and continue running the user program
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+Memory schemes in protected mode
+
+1.	Selectors (CS, DS, ED, SS) etc. (Our segment registers becomes selective registers)
+
+2.	Paging (Remapping Memory Address)
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+Selector memory Scheme
+
+-	Selectors point to data structures that describe memory ranges and the permissions(ring level) required to access a given range
+
+------------------------------------------------------------------------------------------------------------------------------------
+
+Paging memory Scheme
+
+-	Memory is virtual and what you address can point to somwhere entirely different in memory
+
+-	Memory protection is easier to control
+
+-	Paging is the most popular choice for memory schemes with kernel/OS's
+
+-	It also allows you to completely map out all othe other user programs in memory, so it makes it impossible for a user program to see the address space of another program thats running.
+
+-	So Its generally a directory of pointers to page tables and then we have page table entries which point to real memory.
+
+-	Any virtual addresses and physical addresses of those virtual addresses they point to, they all need to be traversable by 4, 9, 6.
+	If there is any remainder, then it wont work.
+
+
+------------------------------------------------------------------------------------------------------------------------------------ 
+
+4GB of Addressable Memory
+
+-	We gain access to 32-bit instructions and can easily work with 32-bit registers
+
+-	We can address up to 4GB of memory at any time and we are no longer limited to the 1MB of memory provided by real mode
+
+------------------------------------------------------------------------------------------------------------------------------------

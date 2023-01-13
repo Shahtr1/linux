@@ -1,0 +1,56 @@
+Modern x86-64 architectures support scalar floating-point arithmetic via a couple of different instruction sets.
+
+-	The SSE and AVX instructions support single-precision and double-precision scalar floating-point arithmetic, i.e., "float" and "double".
+
+-	The x87 instructions support single-, double-, and extended-precision scalar floating-point arithmetic, i.e., "float", "double" and "long double".
+
+The SSE and AVX instruction sets also include vector instructions.
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+SSE for Scalar Floating-Point
+
+Compilers prefer to use the SSE instructions over the x87 instructions because SSE instructions are simpler to compile for and to optimize.
+
+-	SSE opcodes on floating-point values are similar to x86_64 opcodes.
+-	SSE operands use XMM registers and floating-point types.
+
+	Example:
+
+	movsd (%rcx, %rsi, 8), %xmm1
+	mulsd %xmm0, %xmm1
+	addsd (%rax, %rsi, 8), %xmm1
+	movsd %xmm1, (%rax, %rsi, 8)
+
+	From sd's we get that, Data type is a double-precision floating-point value (i.e., a double).
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+SSE Opcode Suffixes
+
+SSE instructions use two-letter suffixes to encode the data type
+
+Assembly suffix 										Data type
+-----------------------------------------------------------------
+
+ss 														One single-precision floating-point value (float)
+sd 														One double-precision floating-point value (double)
+ps 														Vector of single-precision floating-point values
+pd 														Vector of double-precision floating-point values
+
+
+Mnemonic
+-	The first letter distinguishes single or packed (i.e., vector)
+-	The second letter distinguishes single-precision or double-precision
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+

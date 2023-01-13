@@ -1,0 +1,117 @@
+Memory is accessed by a segment and an offset
+
+Programs can be loaded in different areas of memory but run without problems
+
+Multiple segments are aavilable thriugh the use of segment registers
+
+---------------------------------------------------
+
+In Real-mode or the 8086 intel processor, we have segment registers
+
+-	CS - Code Segment
+-	SS - Stack Segment
+-	DS - Data Segment
+-	ES - Extra Segment 
+
+-----------------------------------------------------
+
+Calculating Absolute Offset
+
+-	Take the segment register multiply it by 16 and add the offset
+
+This way we can address 1Mb of RAM in real-mode even though the register can only hold  16 bits (65535)
+
+Example:
+
+	-	lets pretend our CS is at 0x7c0
+
+	-	And Assembly Origin "org" is zero
+
+	-	Our first instruction is at origin zero so our offset is zero
+
+	-	so the absolute position of our first instruction in our program we do
+
+	(0x7c0 * 16) + 0 = 0x7c00 
+
+
+Example Offsets for Absolute Address 0x7cff
+
+	-	Segment 0 offset 0x7cff
+
+	-	Segment 0x7c0 offset 0xFF
+
+	-	Segment 0x7cf offset 0x0F
+		0x7cf * 16 = 0x7cf0
+		0x7cf0 + 0x0F = 0x7cff
+
+----------------------------------------------------------
+
+Different Instructions use Different Segment Registers
+
+-	"lodsb" uses the DS:SI register combination
+		DS as segment, SI as offset register
+
+	Example:
+
+		Org 0
+		mov ax, 0x7c0
+		mov ds, ax
+		mov si, 0x1F
+		lodsb
+
+		What happens?
+
+		0x7c0 * 16 = 0x7c00
+		0x7c00 + 0x1f = 0x7c1f
+
+		lodsb now know, that the byte it needs to read is at 0x7c1f
+
+----------------------------------------------------------
+
+Programs can be loaded in different areas of memory but run without problems
+
+-	Imagine we have two programs loaded into memory, both were assembled with the origin being zero/
+
+-	Program 1 uses segment 0x7CO for all its segment registers
+
+-	Program 1 is loaded at address 0x7c00
+
+-	Program 2 uses segment 0x7D) for all its segment registers
+
+-	Program 1 is loaded at address 0x7d00
+
+-	We swap our segment registers when switching to the other process
+
+-	We restore all the registers of the process we are switching too
+
+-	It resumes as if we never switched process at all
+
+--------------------------------------------------------
+
+Stack Segment
+
+-	SS = 0x00
+-	SP = 0x7c00
+
+Absolute address is SS * 16 + SP
+
+Example:
+
+	1 	Push 0xffff
+	2 	Decrement stack pointer by 2
+	3 	Stack pointer = 0x7bfe
+	4 	Set 0x7bfe-0x7bff to 0xffff
+
+--------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+

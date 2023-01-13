@@ -1,0 +1,42 @@
+Exactly in protected mode, in the Intel Architecture, essentially the Interrupt Service Routines and the memory management are managed by tables of descriptors.
+
+Each descriptor keeps the information about a single object, For example; a task, a service routine, a portion of data or code, etc, which the CPU may need at some time.
+
+If someone tries to fill a new value into a segment register then the CPU requires carrying out safety and access control checks to see either you are literally allowed to access that specified memory area or not.
+
+If these checks are performed successfully then useful values are cached in invisible registers of the CPU.
+
+Intel represents 3 types of tables as follows.
+
+1.	The Interrupt Descriptor Table (which replaces the IVT)
+2.	The Global Descriptor Table (GDT)
+3.	The Local Descriptor Table (LDT)
+
+--------------------------------------------------------------------------------
+
+GDT overview :
+
+The Global Descriptor Table carries entries that tell the CPU about the memory segment.
+
+Step-1 :
+	By using the LGDT assembly instruction, the GDT is loaded. It looks for the location of a structure of GDT description. :
+
+						see image gdtr_descriptor.png
+
+Step-2 :
+	Here, the Offset is the linear address of the descriptor table, the meaning of which is that paging applies and the Size here is the size of the descriptor table which is subtracted by 1.
+	The size of the descriptor table is subtracted by 1 because 65535 is the maximum value for size but the GDT can only be up to 65536 bytes (which means that the entries can be maximum of 8192). Also, no GDT can carry a size of 0.
+
+Step-3 :
+	The GDT contains 8-byte entries, each having a complex structure as follows:
+						see image gdtentry.png
+
+Step-4 : 
+	Here, Limit 0:15 means that the field carries 0-15 bits of the limit value.
+	The base has 32 bits value which contains the linear address from where the segment starts
+
+
+	rest is tough right now...
+
+
+

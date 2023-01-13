@@ -1,0 +1,12 @@
+     1                                 %line 1+1 59.asm
+     2                                 [section .data]
+     3                                 
+     4                                 NULL equ 0
+     5 00000000 2F62696E2F736800       progName db "/bin/sh", NULL
+     6                                 
+     7                                 [section .text]
+     8                                 [global _start]
+     9                                 _start:
+    10 00000000 48C7C03B000000          mov rax, 59
+    11 00000007 48C7C7[00000000]        mov rdi, progName
+    12 0000000E 0F05                    syscall
